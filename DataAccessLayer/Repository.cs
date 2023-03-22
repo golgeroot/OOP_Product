@@ -34,7 +34,9 @@ namespace DataAccessLayer
 
         public int Insert(T p)
         {
-            _object.Add(p);
+            var addentity=c.Entry(p);
+            addentity.State = EntityState.Added;
+            //_object.Add(p);
             return c.SaveChanges();
         }
 
@@ -50,7 +52,8 @@ namespace DataAccessLayer
 
         public int Update(T p)
         {
-          // _object.AddOrUpdate(p);
+            var updateEntity=c.Entry(p);
+            updateEntity.State = EntityState.Modified;
             return c.SaveChanges();
         }
     }

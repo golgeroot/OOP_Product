@@ -1,10 +1,8 @@
 ﻿using BusinessLayer;
+using BusinessLayer.ValidationRules;
 using EntityLayer.Entities;
+using FluentValidation.Results;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OOP_Product
 {
@@ -12,8 +10,8 @@ namespace OOP_Product
     {
         static void Main(string[] args)
         {
-            string islemTuru = "Product";
-            string testTuru = "ListWhere";
+            string islemTuru = "Category";
+            string testTuru = "Insert";
 
             if (islemTuru == "Category")
             {
@@ -34,9 +32,21 @@ namespace OOP_Product
                 }
                 else if (testTuru == "Insert")
                 {
-                    Category ct = new Category();
-                    ct.CategoryName = "Ütü Masası";
-                    cm.BLAdd(ct);
+                    c.CategoryName = "Test Yeni";
+                    CategoryValidator categoryValidator = new CategoryValidator();
+                    ValidationResult results = categoryValidator.Validate(c);
+                    if (results.IsValid)
+                    {
+                        cm.BLAdd(c);
+                        Console.WriteLine("Eklendi");
+                    }
+                    else
+                    {
+                        foreach (var item in results.Errors)
+                        {
+                            Console.WriteLine(item.ErrorMessage);
+                        }
+                    }
                 }
                 else if (testTuru == "Delete")
                 {
@@ -50,19 +60,22 @@ namespace OOP_Product
                 Product pu = new Product();
                 if (testTuru == "Update")
                 {
-
+                    pu.ProductID = 9;
+                    pu.CategoryID = 1;
+                    pu.ProductName = "Masa Laptop";
+                    pm.DlUpdate(pu);
                 }
                 else if (testTuru == "List")
                 {
                     foreach (var item in pm.GetAll())
                     {
                         Console.WriteLine("Ürün ID= " + item.ProductID + "\nÜrün: " + item.ProductName
-                            + "\nKategori ID: " + "\nStok: " + item.Stock +"\nKategoryi Id: "+ item.CategoryID 
+                            + "\nKategori ID: " + "\nStok: " + item.Stock + "\nKategoryi Id: " + item.CategoryID
                             + "\nKategori: " + item.Category);
                         Console.WriteLine();
                     }
                 }
-                else if (testTuru=="ListWhere")
+                else if (testTuru == "ListWhere")
                 {
                     string productName = "Laptop";
                     foreach (var item in pm.GetByName(productName))
@@ -75,10 +88,27 @@ namespace OOP_Product
                 }
                 else if (testTuru == "Insert")
                 {
+                    string kelime = "";
+                    var rnd = new Random();
+                    while (true)
+                    {
+                        Random sayi = new Random();
+                        for (int i = 0; i < 6; i++)
+                        {
+                            kelime += ((char)rnd.Next('A', 'Z')).ToString();
+                        }
+                        pu.ProductName = kelime;
+                        pu.Stock = sayi.Next(1, 500);
+                        pu.CategoryID = 1;
+                        pm.DLAdd(pu);
+                        kelime = "";
+
+                    }
 
                 }
                 else if (testTuru == "Delete")
                 {
+                    pm.DlDelete(8);
                 }
             }
         }

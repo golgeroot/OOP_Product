@@ -24,5 +24,25 @@ namespace BusinessLayer
         {
             return repoproduct.List(x => x.ProductName == p);
         }
+        public int DlDelete(int de)
+        {
+            if (de==0)
+            {
+                return -1;
+            }
+            Product p = repoproduct.Find(c => c.ProductID == de);
+            return repoproduct.Delete(p);
+        }
+        public int DlUpdate(Product u)
+        {
+            if (u.ProductID==0)
+            {
+                return -1;
+            }
+            Product p = repoproduct.Find(x => x.ProductID == u.ProductID);
+            p.ProductName = u.ProductName;
+            p.CategoryID = u.CategoryID;
+            return repoproduct.Update(p);
+        }
     }  
 }
